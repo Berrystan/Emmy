@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archery Showdown 🎯</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Archery Showdown 🎯</h1>
+
+        <!-- LAYER 1: Auth Screen -->
+        <div id="auth-screen" class="screen">
+            <div class="tabs">
+                <button id="tab-login-btn" class="active-tab">Login</button>
+                <button id="tab-register-btn">Register</button>
+            </div>
+
+            <div id="login-form">
+                <input type="text" id="login-username" placeholder="Username" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button id="login-btn">Login</button>
+            </div>
+
+            <div id="register-form" class="hidden">
+                <input type="text" id="reg-username" placeholder="Choose Username" required>
+                <input type="email" id="reg-email" placeholder="Email Address" required>
+                <input type="password" id="reg-password" placeholder="Create Password" required>
+                <button id="register-btn">Register</button>
+            </div>
+            <p id="auth-msg"></p>
+        </div>
+
+        <!-- LAYER 2: Room Selection Screen -->
+        <div id="room-screen" class="screen hidden">
+            <h3>Select an Active Room</h3>
+            <div id="room-list" class="room-list"></div>
+            <button id="back-to-auth-btn" style="margin-top: 10px; background: #475569;">Back to Login</button>
+        </div>
+
+        <!-- LAYER 3: Home / Dashboard Page -->
+        <div id="home-screen" class="screen hidden">
+            <div class="wallet-box">
+                Player: <span id="dash-user" style="color: #38bdf8; font-weight: bold;">-</span><br>
+                Wallet Balance: ₦<span id="dash-balance">0.00</span><br>
+                Room: <span id="dash-room" style="color: #4ade80;">-</span>
+            </div>
+
+            <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                <button id="deposit-btn" style="background: #10b981; padding: 10px;">💳 Deposit</button>
+                <button id="withdraw-btn" style="background: #f59e0b; padding: 10px;">🏦 Withdraw</button>
+                <button id="history-btn" style="background: #6366f1; padding: 10px; flex: 1;">📜 History</button> 
+                  <button id="sync-btn" style="background: #0284c7; padding: 10px; flex: 1;">🔄 Sync</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button id="demo-mode-btn" style="background: #10b981;">🎯 Single Player Demo</button>
+                <button id="private-match-btn" style="background: #8b5cf6;">🔑 1v1 Play via Code</button>
+                <button id="online-match-btn" style="background: #0284c7;">⚔️ Find Online Opponent</button>
+            </div>
+            <button id="switch-room-btn" style="margin-top: 10px; background: #475569;">Switch Room</button>
+        </div>
+         
+<!-- TRANSACTION HISTORY MODAL -->
+<div id="history-modal" class="modal hidden">
+    <div class="modal-content" style="max-width: 420px;">
+        <h3>Transaction History 📜</h3>
+        <div id="history-list" style="max-height: 220px; overflow-y: auto; margin: 10px 0; text-align: left; font-size: 13px;">
+            <!-- Dynamic rows inserted here -->
+        </div>
+        <button id="close-history-btn" style="background: #475569; margin-top: 10px;">Close</button>
+    </div>
+</div>
+
+        <!-- LAYER 4: Main Game Arena Screen -->
+        <div id="game-screen" class="screen hidden">
+            <div class="stats">
+                <div>Room: <span id="lbl-room">-</span></div>
+                <div>Players: <span id="lbl-players">1</span></div>
+                <div>Wind: <span id="lbl-wind">0</span></div>
+            </div>
+
+            <div class="stats">
+                <div>Score: <span id="lbl-score">0</span></div>
+                <div>Shot: <span id="lbl-last-shot">-</span> pts</div>
+                <div>Jitter: <span id="lbl-jitter">0.0</span></div>
+            </div>
+
+            <canvas id="gameCanvas" width="460" height="220"></canvas>
+            <p style="margin-top: 6px; font-size: 12px; color: #94a3b8;">Drag back on bow to aim, release to shoot!</p>
+            <button id="leave-game-btn" style="margin-top: 8px; background: #ef4444; padding: 6px;">Leave Game</button>
+        </div>
+    </div>
+
+    <!-- WITHDRAWAL MODAL -->
+    <div id="withdraw-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Withdraw Funds 🏦</h3>
+            <input type="number" id="w-amount" placeholder="Amount (₦)" min="1">
+            <input type="text" id="w-account" placeholder="10-digit Account Number" maxlength="10">
+            <select id="w-bank">
+                <option value="058">GTBank</option>
+                <option value="011">First Bank</option>
+                <option value="033">UBA</option>
+                <option value="057">Zenith Bank</option>
+                <option value="044">Access Bank</option>
+                <option value="214">FCMB</option>
+                <option value="070">Fidelity Bank</option>
+                <option value="032">Union Bank</option>
+                <option value="999992">OPay</option>
+                <option value="999991">Palmpay</option>
+                <option value="50211">Kuda Bank</option>
+            </select>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button id="confirm-withdraw-btn" style="background: #10b981;">Submit</button>
+                <button id="cancel-withdraw-btn" style="background: #475569;">Cancel</button>
+            </div>
+            <p id="withdraw-msg" style="font-size: 13px; margin-top: 8px;"></p>
+        </div>
+    </div>
+
+    <!-- PRIVATE 1v1 MATCH MODAL -->
+    <div id="private-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>1v1 Private Duel 🔑</h3>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 10px;">Create a room code or enter your friend's code to connect.</p>
+            
+            <button id="generate-code-btn" style="background: #8b5cf6; margin-bottom: 8px;">🎲 Generate Room Code</button>
+            
+            <div style="margin: 8px 0; font-size: 12px; color: #64748b;">— OR ENTER CODE —</div>
+            
+            <input type="text" id="custom-room-code" placeholder="Enter Invite Code (e.g. DART-88)" style="text-transform: uppercase;">
+            
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button id="join-private-btn" style="background: #10b981;">Join Match</button>
+                <button id="cancel-private-btn" style="background: #475569;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
