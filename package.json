@@ -5,6 +5,8 @@
   "scripts": {
     "start": "node server/index.js",
     "postinstall": "npm rebuild sqlite3 --build-from-source"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9"
   }
 }
-
